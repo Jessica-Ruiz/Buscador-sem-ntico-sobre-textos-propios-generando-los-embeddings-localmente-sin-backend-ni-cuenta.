@@ -520,9 +520,9 @@ export async function extraerTextoArchivo(file) {
     }
 
 
-    // --------------------------------------------------------
+    
     // TXT
-    // --------------------------------------------------------
+    
 
     if (
         nombre.endsWith(".txt")
@@ -533,9 +533,9 @@ export async function extraerTextoArchivo(file) {
     }
 
 
-    // --------------------------------------------------------
+    
     // MARKDOWN
-    // --------------------------------------------------------
+    
 
     if (
         nombre.endsWith(".md") ||
@@ -547,9 +547,9 @@ export async function extraerTextoArchivo(file) {
     }
 
 
-    // --------------------------------------------------------
+
     // CSV
-    // --------------------------------------------------------
+
 
     if (
         nombre.endsWith(".csv")
@@ -560,9 +560,9 @@ export async function extraerTextoArchivo(file) {
     }
 
 
-    // --------------------------------------------------------
+
     // JSON
-    // --------------------------------------------------------
+
 
     if (
         nombre.endsWith(".json")
@@ -573,9 +573,9 @@ export async function extraerTextoArchivo(file) {
     }
 
 
-    // --------------------------------------------------------
+
     // FORMATO NO SOPORTADO
-    // --------------------------------------------------------
+
 
     throw new Error(
         `Formato no soportado: ${file.name}`
@@ -584,9 +584,9 @@ export async function extraerTextoArchivo(file) {
 }
 
 
-// ============================================================
+
 // OBTENER EXTENSIÓN
-// ============================================================
+
 
 export function obtenerExtensionArchivo(file) {
 
@@ -606,9 +606,9 @@ export function obtenerExtensionArchivo(file) {
 }
 
 
-// ============================================================
+
 // VERIFICAR FORMATO SOPORTADO
-// ============================================================
+
 
 export function formatoSoportado(file) {
 
@@ -634,9 +634,9 @@ export function formatoSoportado(file) {
 }
 
 
-// ============================================================
+
 // LISTA DE FORMATOS
-// ============================================================
+
 
 export function obtenerFormatosSoportados() {
 
@@ -655,9 +655,9 @@ export function obtenerFormatosSoportados() {
 }
 
 
-// ============================================================
+
 // NOMBRE DEL MODELO
-// ============================================================
+
 
 export function obtenerNombreModelo() {
 
