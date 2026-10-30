@@ -24,6 +24,7 @@ import {
 } from "./buscador.mjs";
 
 import { guardarConfiguracion } from "./almacenamiento.mjs";
+import { enviarConsulta } from "./api.mjs";
 
 const fileInput = document.querySelector("#fileInput");
 const dropZone = document.querySelector("#dropZone");
@@ -409,6 +410,16 @@ async function manejarBusqueda(event) {
     );
 
     try {
+        // Enviar la consulta al servidor Express.
+        const respuestaServidor =
+            await enviarConsulta(consulta);
+
+        console.info(
+            "Respuesta del servidor:",
+            respuestaServidor
+        );
+
+        // Ejecutar la búsqueda semántica local.
         const resultados =
             await buscarSemantico(
                 consulta,
