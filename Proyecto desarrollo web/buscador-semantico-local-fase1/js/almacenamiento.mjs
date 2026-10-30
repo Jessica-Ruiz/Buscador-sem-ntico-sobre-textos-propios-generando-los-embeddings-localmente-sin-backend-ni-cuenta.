@@ -30,7 +30,17 @@ export function cargarConfiguracion() {
             return null;
         }
 
-        return JSON.parse(datos);
+        const configuracion = JSON.parse(datos);
+
+        if (
+            configuracion === null ||
+            typeof configuracion !== "object" ||
+            Array.isArray(configuracion)
+        ) {
+            return null;
+        }
+
+        return configuracion;
     } catch (error) {
         console.warn(
             "No se pudo leer la configuración local:",

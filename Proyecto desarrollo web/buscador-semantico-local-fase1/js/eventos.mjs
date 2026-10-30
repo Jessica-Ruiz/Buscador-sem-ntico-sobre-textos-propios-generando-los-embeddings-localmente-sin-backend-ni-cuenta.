@@ -397,6 +397,8 @@ async function manejarBusqueda(event) {
 
         return;
     }
+    // Guardar temporalmente la última consulta de la sesión.
+    sessionStorage.setItem("ultimaConsulta", consulta); 
 
     const cantidad =
         Number(cantidadResultados.value);

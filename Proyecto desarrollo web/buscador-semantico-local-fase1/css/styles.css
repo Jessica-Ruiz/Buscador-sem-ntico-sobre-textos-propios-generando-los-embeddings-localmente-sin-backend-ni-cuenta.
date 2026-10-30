@@ -111,7 +111,7 @@ label[for="fileInput"],
     margin-right: 5px;
 }
 
-.container {
+.app-container{
     width: min(1180px, calc(100% - 32px));
     margin: 0 auto;
     padding: 48px 0 70px;
@@ -272,9 +272,6 @@ select:focus-visible {
 }
 
 .stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
     margin-top: 16px;
 }
 

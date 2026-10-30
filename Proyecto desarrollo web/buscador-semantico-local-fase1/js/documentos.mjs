@@ -33,8 +33,42 @@ export async function procesarArchivos(archivos, opciones = {}) {
     return documentos;
 }
 
+
 async function procesarArchivo(file, opciones = {}) {
+    // Extensiones permitidas.
+    const extensionesPermitidas = [
+        "txt",
+        "md",
+        "csv",
+        "json",
+        "pdf"
+    ];
+
+    // Validar nombre del archivo.
+    if (
+        !file ||
+        typeof file.name !== "string" ||
+        file.name.trim().length === 0
+    ) {
+        throw new Error("El archivo no tiene un nombre válido.");
+    }
+
     const extension = obtenerExtension(file.name);
+
+    // Validar formato.
+    if (!extensionesPermitidas.includes(extension)) {
+        throw new Error(`Formato no permitido: .${extension}`);
+    }
+
+    // Limitar tamaño a 10 MB.
+    const TAMANIO_MAXIMO = 10 * 1024 * 1024;
+
+    if (file.size > TAMANIO_MAXIMO) {
+        throw new Error(
+            `${file.name} supera el límite permitido de 10 MB.`
+        );
+    }
+
 
     let contenido = "";
     let paginas = 0;
@@ -58,9 +92,20 @@ async function procesarArchivo(file, opciones = {}) {
             throw new Error(`Formato no soportado: .${extension}`);
     }
 
-    if (contenido.trim().length === 0) {
-        throw new Error(`${file.name} no contiene texto extraíble.`);
-    }
+    
+if (contenido.trim().length === 0) {
+    throw new Error(`${file.name} no contiene texto extraíble.`);
+}
+
+// Limitar el contenido procesado por documento.
+const LIMITE_CARACTERES = 2_000_000;
+
+if (contenido.length > LIMITE_CARACTERES) {
+    throw new Error(
+        `${file.name} supera el límite de 2 millones de caracteres.`
+    );
+}
+
 
     const fragmentosTexto = dividirEnFragmentos(contenido);
 
