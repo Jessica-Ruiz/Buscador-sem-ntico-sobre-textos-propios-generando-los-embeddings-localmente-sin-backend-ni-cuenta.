@@ -90,6 +90,39 @@
                     Formatos: TXT · MD · CSV · JSON · PDF
                 </p>
             </div>
+                        <!-- Progreso del procesamiento de documentos -->
+            <div id="progresoCarga" class="upload-progress hidden">
+                <div class="progress-heading">
+                    <span id="etapaCarga" aria-live="polite">
+                        Preparando documento...
+                    </span>
+                    <span id="porcentajeCarga">0%</span>
+                </div>
+
+                <div
+                    class="progress-track"
+                    role="progressbar"
+                    aria-label="Progreso de generación de embeddings"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="0"
+                    id="barraProgreso"
+                >
+                    <div
+                        id="barraProgresoValor"
+                        class="progress-fill"
+                    ></div>
+                </div>
+
+                <button
+                    id="btnCancelarCarga"
+                    class="button button-secondary"
+                    type="button"
+                    disabled
+                >
+                    Cancelar procesamiento
+                </button>
+            </div>
 
             <div class="row g-3 stats" aria-label="Estadísticas de documentos">
         <div class="col-12 col-md-4">
@@ -200,6 +233,7 @@
                 >
             </div>
         </div>
+        </section>
 
         <section class="panel results-panel" aria-labelledby="resultados-titulo">
             <div class="section-heading">

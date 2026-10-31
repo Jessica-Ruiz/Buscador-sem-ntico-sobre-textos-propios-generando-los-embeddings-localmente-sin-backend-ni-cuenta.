@@ -35,6 +35,16 @@ const umbral = document.querySelector("#umbral");
 const valorUmbral = document.querySelector("#valorUmbral");
 const listaDocumentos = document.querySelector("#listaDocumentos");
 
+// Elementos de la interfaz de progreso.
+const progresoCarga = document.querySelector("#progresoCarga");
+const etapaCarga = document.querySelector("#etapaCarga");
+const porcentajeCarga = document.querySelector("#porcentajeCarga");
+const barraProgreso = document.querySelector("#barraProgreso");
+const barraProgresoValor = document.querySelector("#barraProgresoValor");
+const btnCancelarCarga = document.querySelector("#btnCancelarCarga");
+
+// Controlador para cancelar el procesamiento.
+let controladorCarga = null;
 const EXTENSIONES_PERMITIDAS = new Set([
     "txt",
     "md",
@@ -88,11 +98,62 @@ export function configurarEventos() {
         "click",
         manejarAccionesDocumentos
     );
+    // Permite cancelar el procesamiento de documentos.
+    btnCancelarCarga.addEventListener(
+        "click",
+        cancelarProcesamiento
+    );
 
     // Carga el modelo al iniciar.
     prepararModelo();
 }
+/**
+ * Cancela el procesamiento de los documentos.
+ */
+function cancelarProcesamiento() {
+    if (!controladorCarga) {
+        return;
+    }
 
+    controladorCarga.abort();
+
+    etapaCarga.textContent =
+        "Cancelando procesamiento...";
+
+    btnCancelarCarga.disabled = true;
+}
+/**
+ * Actualiza la información visual del procesamiento.
+ */
+function actualizarProgreso(etapa, porcentaje = null) {
+    progresoCarga.classList.remove("hidden");
+
+    etapaCarga.textContent = etapa;
+
+    if (porcentaje === null) {
+        porcentajeCarga.textContent = "—";
+        barraProgreso.setAttribute(
+            "aria-valuenow",
+            "0"
+        );
+        barraProgresoValor.style.width = "0%";
+        return;
+    }
+
+    const valor = Math.max(
+        0,
+        Math.min(100, Math.round(porcentaje))
+    );
+
+    porcentajeCarga.textContent = `${valor}%`;
+
+    barraProgreso.setAttribute(
+        "aria-valuenow",
+        String(valor)
+    );
+
+    barraProgresoValor.style.width = `${valor}%`;
+}
 /**
  * Carga el modelo de embeddings.
  */
@@ -116,6 +177,11 @@ async function prepararModelo() {
                     `Cargando modelo ${porcentaje}%`,
                     "warning"
                 );
+
+                actualizarProgreso(
+                    "Descargando modelo de embeddings...",
+                    porcentaje
+                );
             }
         });
 
@@ -124,9 +190,14 @@ async function prepararModelo() {
             "success"
         );
 
+        actualizarProgreso(
+            "Modelo listo. Esperando documentos...",
+            100
+        );
+
     } catch (error) {
         console.error(
-            "Error cargando modelo:",
+            "Error cargando el modelo:",
             error
         );
 
@@ -259,8 +330,20 @@ async function manejarSeleccionArchivos(event) {
 /**
  * Procesa la lista de archivos.
  */
+/**
+ * Procesa archivos y controla el progreso y la cancelación.
+ */
 async function procesarListaDeArchivos(archivos) {
     if (archivos.length === 0) {
+        return;
+    }
+
+    // Evitar iniciar otro procesamiento simultáneamente.
+    if (controladorCarga) {
+        mostrarEstado(
+            "Ya hay un procesamiento en curso.",
+            "warning"
+        );
         return;
     }
 
@@ -268,10 +351,7 @@ async function procesarListaDeArchivos(archivos) {
         esArchivoValido
     );
 
-    if (
-        archivosValidos.length !==
-        archivos.length
-    ) {
+    if (archivosValidos.length !== archivos.length) {
         mostrarEstado(
             "Se ignoraron archivos con formatos no compatibles.",
             "warning"
@@ -282,8 +362,17 @@ async function procesarListaDeArchivos(archivos) {
         return;
     }
 
+    controladorCarga = new AbortController();
+
+    const signal = controladorCarga.signal;
+
+    fileInput.disabled = true;
+    btnCancelarCarga.disabled = false;
+
+    actualizarProgreso("Preparando documentos...", 0);
+
     mostrarEstado(
-        "Generando embeddings de los documentos...",
+        "Iniciando procesamiento de documentos...",
         "warning"
     );
 
@@ -291,18 +380,38 @@ async function procesarListaDeArchivos(archivos) {
         await procesarArchivos(
             archivosValidos,
             {
+                signal,
+
+                onStage: (etapa) => {
+                    actualizarProgreso(etapa);
+                },
+                onReadProgress: (porcentaje) => {
+                actualizarProgreso(
+                    "Leyendo archivo...",
+                    porcentaje
+                );
+
+                mostrarEstado(
+                    `Leyendo archivo: ${Math.round(porcentaje)}%`,
+                    "warning"
+                );
+                },
+
                 onEmbeddingProgress: (evento) => {
                     if (
                         evento?.status === "embedding" &&
                         Number.isFinite(evento.progress)
                     ) {
                         const porcentaje =
-                            Math.round(
-                                evento.progress * 100
-                            );
+                            evento.progress * 100;
+
+                        actualizarProgreso(
+                            "Generando embeddings del archivo actual...",
+                            porcentaje
+                        );
 
                         mostrarEstado(
-                            `Generando embeddings ${porcentaje}%...`,
+                            `Generando embeddings: ${Math.round(porcentaje)}%`,
                             "warning"
                         );
                     }
@@ -310,8 +419,12 @@ async function procesarListaDeArchivos(archivos) {
             }
         );
 
-        const documentos =
-            obtenerDocumentos();
+        actualizarProgreso(
+            "Procesamiento completado.",
+            100
+        );
+
+        const documentos = obtenerDocumentos();
 
         mostrarDocumentos(documentos);
         actualizarEstadisticas(documentos);
@@ -332,13 +445,38 @@ async function procesarListaDeArchivos(archivos) {
             error
         );
 
-        const mensaje =
-            obtenerMensajeError(error);
+        if (
+            error.name === "AbortError" ||
+            signal.aborted
+        ) {
+            actualizarProgreso(
+                "Procesamiento cancelado.",
+                0
+            );
 
-        mostrarEstado(
-            `No se pudieron procesar los documentos: ${mensaje}`,
-            "error"
-        );
+            mostrarEstado(
+                "Procesamiento cancelado. Los documentos completados se conservaron.",
+                "warning"
+            );
+
+        } else {
+            actualizarProgreso(
+                "Error durante el procesamiento.",
+                0
+            );
+
+            const mensaje = obtenerMensajeError(error);
+
+            mostrarEstado(
+                `No se pudieron procesar los documentos: ${mensaje}`,
+                "error"
+            );
+        }
+
+    } finally {
+        controladorCarga = null;
+        fileInput.disabled = false;
+        btnCancelarCarga.disabled = true;
     }
 }
 

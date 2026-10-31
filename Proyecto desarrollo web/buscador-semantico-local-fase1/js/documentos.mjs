@@ -13,10 +13,14 @@ const documentos = [];
  */
 export async function procesarArchivos(archivos, opciones = {}) {
     for (const archivo of archivos) {
+        comprobarCancelacion(opciones.signal);
+
         const documento = await procesarArchivo(
             archivo,
             opciones
         );
+
+        comprobarCancelacion(opciones.signal);
 
         const existente = documentos.find(
             (item) => item.nombre === documento.nombre
@@ -32,7 +36,63 @@ export async function procesarArchivos(archivos, opciones = {}) {
 
     return documentos;
 }
+/**
+ * Lee un archivo de texto e informa cuánto se ha leído.
+ */
+function leerArchivoConProgreso(file, onProgress, signal) {
+    return new Promise((resolve, reject) => {
+        const lector = new FileReader();
 
+        const limpiar = () => {
+            signal?.removeEventListener("abort", cancelar);
+        };
+
+        const cancelar = () => {
+            lector.abort();
+        };
+
+        if (signal?.aborted) {
+            const error = new Error("Lectura cancelada.");
+            error.name = "AbortError";
+            reject(error);
+            return;
+        }
+
+        lector.onload = () => {
+            limpiar();
+            resolve(lector.result);
+        };
+
+        lector.onerror = () => {
+            limpiar();
+            reject(lector.error || new Error("Error al leer el archivo."));
+        };
+
+        lector.onabort = () => {
+            limpiar();
+
+            const error = new Error("Lectura cancelada.");
+            error.name = "AbortError";
+
+            reject(error);
+        };
+
+        lector.onprogress = (evento) => {
+            if (
+                evento.lengthComputable &&
+                typeof onProgress === "function"
+            ) {
+                onProgress(
+                    (evento.loaded / evento.total) * 100
+                );
+            }
+        };
+
+        signal?.addEventListener("abort", cancelar, { once: true });
+
+        lector.readAsText(file);
+    });
+}
 
 async function procesarArchivo(file, opciones = {}) {
     // Extensiones permitidas.
@@ -70,15 +130,29 @@ async function procesarArchivo(file, opciones = {}) {
     }
 
 
+    comprobarCancelacion(opciones.signal);
+
     let contenido = "";
     let paginas = 0;
+
+    if (typeof opciones.onStage === "function") {
+        opciones.onStage("Leyendo archivo...");
+    }
 
     switch (extension) {
         case "txt":
         case "md":
         case "csv":
         case "json":
-            contenido = await file.text();
+            contenido = await leerArchivoConProgreso(
+                file,
+                (porcentaje) => {
+                    if (typeof opciones.onReadProgress === "function") {
+                        opciones.onReadProgress(porcentaje);
+                    }
+                },
+                opciones.signal
+            );
             break;
 
         case "pdf": {
@@ -91,6 +165,7 @@ async function procesarArchivo(file, opciones = {}) {
         default:
             throw new Error(`Formato no soportado: .${extension}`);
     }
+    comprobarCancelacion(opciones.signal);
 
     
 if (contenido.trim().length === 0) {
@@ -117,10 +192,17 @@ if (contenido.length > LIMITE_CARACTERES) {
         embedding: null
     }));
 
+    if (typeof opciones.onStage === "function") {
+        opciones.onStage("Generando embeddings...");
+    }
+
     const embeddings = await generarEmbeddings(
         fragmentos.map((fragmento) => fragmento.texto),
-        opciones.onEmbeddingProgress
+        opciones.onEmbeddingProgress,
+        opciones.signal
     );
+
+    comprobarCancelacion(opciones.signal);
 
     for (let indice = 0; indice < fragmentos.length; indice += 1) {
         fragmentos[indice].embedding = embeddings[indice];
@@ -135,6 +217,20 @@ if (contenido.length > LIMITE_CARACTERES) {
         paginas,
         fragmentos
     };
+}
+/**
+ * Detiene el procesamiento cuando se solicita una cancelación.
+ */
+function comprobarCancelacion(signal) {
+    if (signal?.aborted) {
+        const error = new Error(
+            "El procesamiento fue cancelado por el usuario."
+        );
+
+        error.name = "AbortError";
+
+        throw error;
+    }
 }
 
 /**

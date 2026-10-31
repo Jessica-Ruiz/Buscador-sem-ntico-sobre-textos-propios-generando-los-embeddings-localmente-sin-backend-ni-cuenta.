@@ -144,84 +144,75 @@ export async function generarEmbedding(texto) {
  */
 export async function generarEmbeddings(
     textos,
-    onProgress = null
+    onProgress = null,
+    signal = null
 ) {
-    if (
-        !Array.isArray(textos) ||
-        textos.length === 0
-    ) {
+    if (!Array.isArray(textos) || textos.length === 0) {
         return [];
     }
 
-    const textosValidos =
-        textos.filter(
-            (texto) =>
-                typeof texto === "string" &&
-                texto.trim().length > 0
-        );
+    comprobarCancelacion(signal);
 
-    if (
-        textosValidos.length === 0
-    ) {
+    const textosValidos = textos.filter(
+        (texto) =>
+            typeof texto === "string" &&
+            texto.trim().length > 0
+    );
+
+    if (textosValidos.length === 0) {
         throw new Error(
             "No hay textos válidos para generar embeddings."
         );
     }
 
-    const modelo =
-        await cargarModelo(onProgress);
+    const modelo = await cargarModelo(onProgress);
+
+    comprobarCancelacion(signal);
 
     const vectores = [];
 
-    for (
-        let i = 0;
-        i < textosValidos.length;
-        i++
-    ) {
-        const texto =
-            textosValidos[i];
+    for (let i = 0; i < textosValidos.length; i++) {
+        comprobarCancelacion(signal);
+
+        await permitirActualizarInterfaz();
+
+        comprobarCancelacion(signal);
+
+        const texto = textosValidos[i];
 
         try {
-            const salida =
-                await modelo(
-                    texto,
-                    {
-                        pooling: "mean",
-                        normalize: true
-                    }
-                );
+            const salida = await modelo(
+                texto,
+                {
+                    pooling: "mean",
+                    normalize: true
+                }
+            );
 
-            if (
-                !salida ||
-                !salida.data
-            ) {
+            comprobarCancelacion(signal);
+
+            if (!salida || !salida.data) {
                 throw new Error(
                     "El modelo no devolvió datos para este texto."
                 );
             }
 
-            const vector =
-                Array.from(
-                    salida.data
-                );
+            vectores.push(Array.from(salida.data));
 
-            vectores.push(vector);
-
-            if (
-                typeof onProgress === "function"
-            ) {
+            if (typeof onProgress === "function") {
                 onProgress({
                     status: "embedding",
-                    progress:
-                        (i + 1) /
-                        textosValidos.length,
+                    progress: (i + 1) / textosValidos.length,
                     loaded: i + 1,
-                    total:
-                        textosValidos.length
+                    total: textosValidos.length
                 });
             }
 
         } catch (error) {
+            if (error.name === "AbortError") {
+                throw error;
+            }
+
             console.error(
                 `ERROR EN EMBEDDING ${i + 1}:`,
                 error
@@ -368,7 +359,28 @@ async function importarPDFJS() {
         throw error;
     }
 }
+/**
+ * Comprueba si el usuario solicitó cancelar el procesamiento.
+ */
+function comprobarCancelacion(signal) {
+    if (signal?.aborted) {
+        const error = new Error(
+            "El procesamiento fue cancelado por el usuario."
+        );
 
+        error.name = "AbortError";
+
+        throw error;
+    }
+}
+/**
+ * Cede el control al navegador para actualizar la interfaz.
+ */
+function permitirActualizarInterfaz() {
+    return new Promise((resolve) => {
+        setTimeout(resolve, 0);
+    });
+}
 /**
  * Obtiene el mensaje real del error.
  */
