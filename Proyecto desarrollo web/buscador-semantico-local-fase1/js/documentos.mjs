@@ -121,12 +121,12 @@ async function procesarArchivo(file, opciones = {}) {
     }
 
     // Limitar tamaño a 10 MB.
-    const TAMANIO_MAXIMO = 10 * 1024 * 1024;
+const TAMANIO_MAXIMO = 25 * 1024 * 1024;
 
     if (file.size > TAMANIO_MAXIMO) {
         throw new Error(
-            `${file.name} supera el límite permitido de 10 MB.`
-        );
+        `${file.name} supera el límite permitido de 25 MB.`
+    );
     }
 
 
@@ -238,6 +238,8 @@ function comprobarCancelacion(signal) {
  * en bloques de aproximadamente 900 caracteres.
  */
 export function dividirEnFragmentos(texto) {
+    const MAX_CARACTERES = 900;
+
     const parrafos = texto
         .replace(/\r\n/g, "\n")
         .split(/\n\s*\n/)
@@ -247,17 +249,63 @@ export function dividirEnFragmentos(texto) {
     const resultado = [];
 
     for (const parrafo of parrafos) {
-        if (parrafo.length <= 900) {
-            resultado.push(parrafo);
-            continue;
+        // Separar el párrafo en oraciones.
+        const oraciones = parrafo
+            .split(/(?<=[.!?])\s+/)
+            .filter((oracion) => oracion.trim().length > 0);
+
+        let fragmentoActual = "";
+
+        for (const oracionOriginal of oraciones) {
+            const oracion = oracionOriginal.trim();
+
+            // Si la oración supera el límite, dividirla por palabras.
+            if (oracion.length > MAX_CARACTERES) {
+                if (fragmentoActual) {
+                    resultado.push(fragmentoActual);
+                    fragmentoActual = "";
+                }
+
+                const palabras = oracion.split(/\s+/);
+                let bloque = "";
+
+                for (const palabra of palabras) {
+                    const candidato = bloque
+                        ? `${bloque} ${palabra}`
+                        : palabra;
+
+                    if (
+                        candidato.length > MAX_CARACTERES &&
+                        bloque.length > 0
+                    ) {
+                        resultado.push(bloque);
+                        bloque = palabra;
+                    } else {
+                        bloque = candidato;
+                    }
+                }
+
+                if (bloque) {
+                    fragmentoActual = bloque;
+                }
+
+                continue;
+            }
+
+            const candidato = fragmentoActual
+                ? `${fragmentoActual} ${oracion}`
+                : oracion;
+
+            if (candidato.length > MAX_CARACTERES) {
+                resultado.push(fragmentoActual);
+                fragmentoActual = oracion;
+            } else {
+                fragmentoActual = candidato;
+            }
         }
 
-        for (let inicio = 0; inicio < parrafo.length; inicio += 750) {
-            const bloque = parrafo.slice(inicio, inicio + 900).trim();
-
-            if (bloque.length > 0) {
-                resultado.push(bloque);
-            }
+        if (fragmentoActual) {
+            resultado.push(fragmentoActual);
         }
     }
 

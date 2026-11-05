@@ -177,22 +177,12 @@ async function prepararModelo() {
                     `Cargando modelo ${porcentaje}%`,
                     "warning"
                 );
-
-                actualizarProgreso(
-                    "Descargando modelo de embeddings...",
-                    porcentaje
-                );
             }
         });
 
         establecerEstadoModelo(
             "Modelo listo · embeddings locales",
             "success"
-        );
-
-        actualizarProgreso(
-            "Modelo listo. Esperando documentos...",
-            100
         );
 
     } catch (error) {
