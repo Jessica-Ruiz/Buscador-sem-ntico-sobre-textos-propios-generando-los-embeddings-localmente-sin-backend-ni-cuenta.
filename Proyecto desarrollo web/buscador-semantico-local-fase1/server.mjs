@@ -2,9 +2,13 @@
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import compression from "compression";
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use(compression());
+
 
 // Obtener la ruta de la carpeta del proyecto.
 const __filename = fileURLToPath(import.meta.url);
