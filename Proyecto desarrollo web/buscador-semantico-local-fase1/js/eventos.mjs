@@ -403,6 +403,7 @@ async function procesarListaDeArchivos(archivos) {
     }
 
     try {
+        console.log("DIAGNÓSTICO: Iniciando procesarArchivos");
         await procesarArchivos(
             archivosValidos,
             {
@@ -445,6 +446,7 @@ async function procesarListaDeArchivos(archivos) {
                 }
             }
         );
+        console.log("DIAGNÓSTICO: procesarArchivos terminó correctamente");
 
         // Procesamiento finalizado correctamente.
         actualizarProgreso(
