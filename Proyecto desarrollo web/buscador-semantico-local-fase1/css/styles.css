@@ -693,3 +693,35 @@ select:focus-visible {
     outline: 3px solid #2563eb !important;
     outline-offset: 4px;
 }
+
+/* =========================================
+   DISEÑO RESPONSIVE PARA CELULARES
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    /* Organizar el encabezado verticalmente */
+    .section-heading {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    /* Evitar que el título se desborde */
+    .section-heading > div {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    /* Ajustar el indicador del modelo */
+    #estadoModelo {
+        display: inline-flex;
+        align-items: center;
+        max-width: 100%;
+        width: fit-content;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        box-sizing: border-box;
+    }
+}
