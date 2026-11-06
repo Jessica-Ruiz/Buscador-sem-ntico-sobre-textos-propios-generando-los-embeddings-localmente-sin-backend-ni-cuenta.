@@ -671,3 +671,25 @@ select:focus-visible {
     outline: 3px solid #8b5cf6;
     outline-offset: 3px;
 }
+
+/* Accesibilidad: enfoque visible al navegar con teclado */
+:where(
+    button,
+    input,
+    select,
+    textarea,
+    a,
+    [role="button"],
+    [tabindex]
+):focus-visible {
+    outline: 3px solid #2563eb !important;
+    outline-offset: 4px;
+    box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.18);
+}
+
+/* Mantener visible el enfoque en controles personalizados */
+.drop-zone:focus-visible,
+.button:focus-visible {
+    outline: 3px solid #2563eb !important;
+    outline-offset: 4px;
+}

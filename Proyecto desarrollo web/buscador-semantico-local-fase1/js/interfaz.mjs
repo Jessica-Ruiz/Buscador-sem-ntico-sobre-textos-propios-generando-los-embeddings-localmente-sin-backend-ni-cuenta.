@@ -36,9 +36,27 @@ export function establecerEstadoModelo(mensaje, tipo = "warning") {
     estadoModelo.className = `status status-${tipo}`;
 }
 
+
 export function mostrarEstado(mensaje, tipo = "warning") {
-    establecerEstadoModelo(mensaje, tipo);
+    const elemento = document.getElementById("mensajeBusqueda");
+
+    if (!elemento) {
+        console.warn("No se encontró el contenedor de mensajes.");
+        return;
+    }
+
+    const estilos = {
+        warning: "alert-warning",
+        error: "alert-danger",
+        success: "alert-success"
+    };
+
+    elemento.className =
+        `alert ${estilos[tipo] || "alert-info"} mt-3`;
+
+    elemento.textContent = mensaje;
 }
+
 
 export function mostrarDocumentos(documentos) {
     listaDocumentos.replaceChildren();
@@ -177,4 +195,23 @@ export function limpiarResultados() {
         "Los resultados relevantes aparecerán aquí.";
 
     contadorResultados.textContent = "0 resultados";
+}
+export function mostrarEstadoDocumentos(mensaje, tipo = "warning") {
+    const elemento = document.getElementById("mensajeDocumentos");
+
+    if (!elemento) {
+        console.warn("No se encontró el contenedor de mensajes de documentos.");
+        return;
+    }
+
+    const estilos = {
+        warning: "alert-warning",
+        error: "alert-danger",
+        success: "alert-success"
+    };
+
+    elemento.className =
+        `alert ${estilos[tipo] || "alert-info"} mt-3`;
+
+    elemento.textContent = mensaje;
 }

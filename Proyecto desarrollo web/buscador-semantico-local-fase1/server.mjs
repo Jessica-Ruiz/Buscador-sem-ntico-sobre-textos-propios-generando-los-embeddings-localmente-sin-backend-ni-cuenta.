@@ -66,12 +66,31 @@ app.post("/api/consulta", (req, res) => {
 });
 
 
-// Ruta para recursos inexistentes.
-app.use((req, res) => {
-    res.status(404).json({
-        error: "Recurso no encontrado"
+
+// Manejo centralizado de errores.
+app.use((err, req, res, next) => {
+    // JSON malformado.
+    if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+        return res.status(400).json({
+            error: "El formato JSON enviado no es válido."
+        });
+    }
+
+    // Solicitudes demasiado grandes.
+    if (err.status === 413) {
+        return res.status(413).json({
+            error: "La solicitud supera el tamaño permitido."
+        });
+    }
+
+    // Otros errores del servidor.
+    console.error("Error interno:", err);
+
+    return res.status(500).json({
+        error: "Ocurrió un error interno en el servidor."
     });
 });
+
 
 // Iniciar servidor.
 app.listen(PORT, () => {

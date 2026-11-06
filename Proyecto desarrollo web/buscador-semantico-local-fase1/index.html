@@ -202,6 +202,15 @@
                 Escribe una pregunta sobre tus documentos y encuentra
                 fragmentos relacionados mediante búsqueda semántica local.
             </p>
+            
+
+            <div
+                id="mensajeBusqueda"
+                class="alert d-none mt-3"
+                role="status"
+                aria-live="polite"
+            ></div>
+
 
         <div class="row g-3 search-options align-items-center">
             <div class="col-12 col-md-auto d-flex align-items-center gap-2">
@@ -233,7 +242,19 @@
                 >
             </div>
         </div>
+                <div class="d-flex justify-content-end mt-3">
+            <button
+                id="btnBorrarDatos"
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+            >
+                Borrar datos guardados
+            </button>
+        </div>
         </section>
+        
+
+
 
         <section class="panel results-panel" aria-labelledby="resultados-titulo">
             <div class="section-heading">

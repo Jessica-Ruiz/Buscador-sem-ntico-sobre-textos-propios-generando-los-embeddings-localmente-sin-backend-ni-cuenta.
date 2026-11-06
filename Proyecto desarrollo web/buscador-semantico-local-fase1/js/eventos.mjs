@@ -1,19 +1,21 @@
 
 import {
-    procesarArchivos,
-    obtenerDocumentos,
-    eliminarDocumento
-} from "./documentos.mjs";
-
-import {
     mostrarDocumentos,
     actualizarEstadisticas,
     mostrarEstado,
+    mostrarEstadoDocumentos,
     mostrarResultados,
     mostrarSinResultados,
     limpiarResultados,
     establecerEstadoModelo
 } from "./interfaz.mjs";
+import {
+    procesarArchivos,
+    obtenerDocumentos,
+    eliminarDocumento
+} from "./documentos.mjs";
+
+
 
 import {
     cargarModelo
@@ -26,6 +28,8 @@ import {
 import { guardarConfiguracion } from "./almacenamiento.mjs";
 import { enviarConsulta } from "./api.mjs";
 
+
+
 const fileInput = document.querySelector("#fileInput");
 const dropZone = document.querySelector("#dropZone");
 const searchForm = document.querySelector("#searchForm");
@@ -34,6 +38,7 @@ const cantidadResultados = document.querySelector("#cantidadResultados");
 const umbral = document.querySelector("#umbral");
 const valorUmbral = document.querySelector("#valorUmbral");
 const listaDocumentos = document.querySelector("#listaDocumentos");
+const btnBorrarDatos = document.querySelector("#btnBorrarDatos");
 
 // Elementos de la interfaz de progreso.
 const progresoCarga = document.querySelector("#progresoCarga");
@@ -54,6 +59,11 @@ const EXTENSIONES_PERMITIDAS = new Set([
 ]);
 
 export function configurarEventos() {
+    const ultimaConsulta = sessionStorage.getItem("ultimaConsulta");
+
+    if (ultimaConsulta) {
+        busqueda.value = ultimaConsulta;
+    }
     fileInput.addEventListener(
         "change",
         manejarSeleccionArchivos
@@ -93,6 +103,12 @@ export function configurarEventos() {
         "input",
         manejarCambioUmbral
     );
+    
+    cantidadResultados.addEventListener(
+        "change",
+        guardarPreferencias
+    );
+
 
     listaDocumentos.addEventListener(
         "click",
@@ -102,6 +118,10 @@ export function configurarEventos() {
     btnCancelarCarga.addEventListener(
         "click",
         cancelarProcesamiento
+    );
+    btnBorrarDatos.addEventListener(
+    "click",
+    borrarDatosGuardados
     );
 
     // Carga el modelo al iniciar.
@@ -317,9 +337,7 @@ async function manejarSeleccionArchivos(event) {
     event.target.value = "";
 }
 
-/**
- * Procesa la lista de archivos.
- */
+
 /**
  * Procesa archivos y controla el progreso y la cancelación.
  */
@@ -330,41 +348,59 @@ async function procesarListaDeArchivos(archivos) {
 
     // Evitar iniciar otro procesamiento simultáneamente.
     if (controladorCarga) {
-        mostrarEstado(
+        mostrarEstadoDocumentos(
             "Ya hay un procesamiento en curso.",
             "warning"
         );
         return;
     }
 
+    // Validar las extensiones permitidas.
     const archivosValidos = archivos.filter(
         esArchivoValido
     );
 
-    if (archivosValidos.length !== archivos.length) {
-        mostrarEstado(
-            "Se ignoraron archivos con formatos no compatibles.",
-            "warning"
-        );
-    }
+    const hayArchivosInvalidos =
+        archivosValidos.length !== archivos.length;
 
     if (archivosValidos.length === 0) {
+        mostrarEstadoDocumentos(
+            "No se encontraron archivos compatibles. Utiliza TXT, MD, CSV, JSON o PDF.",
+            "warning"
+        );
         return;
     }
 
+    // Crear el controlador de cancelación.
     controladorCarga = new AbortController();
-
     const signal = controladorCarga.signal;
 
     fileInput.disabled = true;
     btnCancelarCarga.disabled = false;
 
+    // Limpiar mensajes del procesamiento anterior.
+    const mensajeDocumentos =
+        document.getElementById("mensajeDocumentos");
+
+    if (mensajeDocumentos) {
+        mensajeDocumentos.className = "alert d-none mt-3";
+        mensajeDocumentos.textContent = "";
+    }
+
+    // Reiniciar el progreso.
     actualizarProgreso("Preparando documentos...", 0);
 
-    mostrarEstado(
-        "Iniciando procesamiento de documentos...",
-        "warning"
-    );
+    if (hayArchivosInvalidos) {
+        mostrarEstadoDocumentos(
+            "Se ignoraron archivos con formatos no compatibles. Procesando los archivos válidos...",
+            "warning"
+        );
+    } else {
+        mostrarEstadoDocumentos(
+            "Iniciando procesamiento de documentos...",
+            "warning"
+        );
+    }
 
     try {
         await procesarArchivos(
@@ -375,16 +411,17 @@ async function procesarListaDeArchivos(archivos) {
                 onStage: (etapa) => {
                     actualizarProgreso(etapa);
                 },
-                onReadProgress: (porcentaje) => {
-                actualizarProgreso(
-                    "Leyendo archivo...",
-                    porcentaje
-                );
 
-                mostrarEstado(
-                    `Leyendo archivo: ${Math.round(porcentaje)}%`,
-                    "warning"
-                );
+                onReadProgress: (porcentaje) => {
+                    actualizarProgreso(
+                        "Leyendo archivo...",
+                        porcentaje
+                    );
+
+                    mostrarEstadoDocumentos(
+                        `Leyendo archivo: ${Math.round(porcentaje)}%`,
+                        "warning"
+                    );
                 },
 
                 onEmbeddingProgress: (evento) => {
@@ -400,7 +437,7 @@ async function procesarListaDeArchivos(archivos) {
                             porcentaje
                         );
 
-                        mostrarEstado(
+                        mostrarEstadoDocumentos(
                             `Generando embeddings: ${Math.round(porcentaje)}%`,
                             "warning"
                         );
@@ -409,6 +446,7 @@ async function procesarListaDeArchivos(archivos) {
             }
         );
 
+        // Procesamiento finalizado correctamente.
         actualizarProgreso(
             "Procesamiento completado.",
             100
@@ -424,7 +462,7 @@ async function procesarListaDeArchivos(archivos) {
             "success"
         );
 
-        mostrarEstado(
+        mostrarEstadoDocumentos(
             "Documentos procesados correctamente.",
             "success"
         );
@@ -436,20 +474,22 @@ async function procesarListaDeArchivos(archivos) {
         );
 
         if (
-            error.name === "AbortError" ||
+            error?.name === "AbortError" ||
             signal.aborted
         ) {
+            // Procesamiento cancelado.
             actualizarProgreso(
                 "Procesamiento cancelado.",
                 0
             );
 
-            mostrarEstado(
+            mostrarEstadoDocumentos(
                 "Procesamiento cancelado. Los documentos completados se conservaron.",
                 "warning"
             );
 
         } else {
+            // Error durante el procesamiento.
             actualizarProgreso(
                 "Error durante el procesamiento.",
                 0
@@ -457,18 +497,20 @@ async function procesarListaDeArchivos(archivos) {
 
             const mensaje = obtenerMensajeError(error);
 
-            mostrarEstado(
+            mostrarEstadoDocumentos(
                 `No se pudieron procesar los documentos: ${mensaje}`,
                 "error"
             );
         }
 
     } finally {
+        // Restablecer controles.
         controladorCarga = null;
         fileInput.disabled = false;
         btnCancelarCarga.disabled = true;
     }
 }
+
 
 /**
  * Verifica si el archivo tiene una extensión permitida.
@@ -558,11 +600,24 @@ async function manejarBusqueda(event) {
                 valor
             );
 
+            
         if (resultados.length === 0) {
             mostrarSinResultados();
-        } else {
-            mostrarResultados(resultados);
-        }
+
+        mostrarEstado(
+            "Búsqueda completada. No se encontraron resultados que cumplan con el umbral de similitud.",
+            "warning"
+        );
+
+} else {
+    mostrarResultados(resultados);
+
+    mostrarEstado(
+        `Búsqueda completada correctamente. Se encontraron ${resultados.length} resultados.`,
+        "success"
+    );
+}
+
 
         establecerEstadoModelo(
             "Modelo listo · búsqueda local",
@@ -600,14 +655,18 @@ function manejarCambioUmbral() {
     valorUmbral.value =
         valor.toFixed(2);
 
+    guardarPreferencias();
+}
+/**
+ * Guarda las preferencias actuales de búsqueda.
+ */
+function guardarPreferencias() {
     guardarConfiguracion({
-        cantidadResultados:
-            Number(
-                cantidadResultados.value
-            ),
-        umbral: valor
+        cantidadResultados: Number(cantidadResultados.value),
+        umbral: Number(umbral.value)
     });
 }
+
 
 /**
  * Maneja las acciones de los documentos.
@@ -635,6 +694,41 @@ function manejarAccionesDocumentos(event) {
 
     mostrarEstado(
         "Documento eliminado.",
+        "success"
+    );
+}
+
+
+/**
+ * Elimina las preferencias y la última consulta guardadas.
+ */
+function borrarDatosGuardados() {
+    const confirmar = window.confirm(
+        "¿Deseas borrar las preferencias y la última consulta guardada?"
+    );
+
+    if (!confirmar) {
+        return;
+    }
+
+    // Eliminar datos del almacenamiento.
+    localStorage.removeItem("semanticSearchLocal.config");
+    sessionStorage.removeItem("ultimaConsulta");
+
+    // Restablecer las preferencias.
+    cantidadResultados.value = "5";
+    umbral.value = "0.30";
+    valorUmbral.value = "0.30";
+
+    // Limpiar la pregunta.
+    busqueda.value = "";
+
+    // Limpiar los resultados visibles.
+    limpiarResultados();
+
+    // Informar al usuario.
+    mostrarEstado(
+        "Datos guardados eliminados correctamente.",
         "success"
     );
 }
