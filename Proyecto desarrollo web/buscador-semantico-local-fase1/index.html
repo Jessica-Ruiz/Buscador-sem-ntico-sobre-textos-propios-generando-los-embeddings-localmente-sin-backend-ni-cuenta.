@@ -90,7 +90,15 @@
                     Formatos: TXT · MD · CSV · JSON · PDF
                 </p>
             </div>
-                        <!-- Progreso del procesamiento de documentos -->
+            
+            <div
+                id="mensajeDocumentos"
+                class="alert alert-info mt-3 d-none"
+                role="status"
+                aria-live="polite"
+            ></div>
+
+            <!-- Progreso del procesamiento de documentos -->
             <div id="progresoCarga" class="upload-progress hidden">
                 <div class="progress-heading">
                     <span id="etapaCarga" aria-live="polite">

@@ -41,22 +41,27 @@ export async function cargarModelo(onProgress = null) {
         try {
             const { pipeline, env } =await import(TRANSFORMERS_URL);
 
-            env.useBrowserCache = true;
-            env.allowRemoteModels = true;
+            
+        env.useBrowserCache = true;
+        env.allowLocalModels = true;
+        env.allowRemoteModels = false;
+        env.localModelPath = "/models/";
 
-            extractor = await pipeline(
-                "feature-extraction",
-                MODEL_ID,
-                {
-                    progress_callback: (evento) => {
-                        if (
-                            typeof onProgress === "function"
-                        ) {
-                            onProgress(evento);
-                        }
+
+
+        extractor = await pipeline(
+            "feature-extraction",
+            MODEL_ID,
+            {
+                dtype: "q8",
+                progress_callback: (evento) => {
+                    if (typeof onProgress === "function") {
+                        onProgress(evento);
                     }
                 }
-            );
+            }
+        );
+
 
             return extractor;
 

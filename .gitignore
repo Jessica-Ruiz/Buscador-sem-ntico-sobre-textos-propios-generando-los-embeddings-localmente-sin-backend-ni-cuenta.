@@ -11,3 +11,8 @@ node_modules/
 *.log
 .DS_Store
 Thumbs.db
+
+
+
+**/models/Xenova/paraphrase-multilingual-MiniLM-L12-v2/onnx/*.onnx
+

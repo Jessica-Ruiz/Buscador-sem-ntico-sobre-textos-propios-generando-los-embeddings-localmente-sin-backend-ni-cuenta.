@@ -20,6 +20,7 @@ app.use(express.json({ limit: "1mb" }));
 // Publicar únicamente los recursos necesarios del frontend.
 app.use("/css", express.static(path.join(__dirname, "css")));
 app.use("/js", express.static(path.join(__dirname, "js")));
+app.use("/models", express.static(path.join(__dirname, "models")));
 
 // Ruta principal.
 app.get("/", (req, res) => {

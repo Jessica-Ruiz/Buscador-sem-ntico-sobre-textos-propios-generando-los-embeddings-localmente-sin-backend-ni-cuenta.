@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "Buscador semántico local de documentos mediante embeddings",
   "type": "module",
-  "scripts": {
-    "start": "node server.mjs"
-  },
+
+"scripts": {
+  "start": "node server.mjs",
+  "download:model": "node descargar-modelo.mjs"
+}
+,
   "keywords": [
     "buscador-semantico",
     "embeddings",
