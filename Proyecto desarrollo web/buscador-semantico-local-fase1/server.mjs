@@ -6,16 +6,32 @@ import compression from "compression";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 // Evitar revelar la tecnología del servidor.
 app.disable("x-powered-by");
 
+// Reconocer HTTPS cuando la aplicación está detrás
+// del proxy de Render.
+if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1);
+}
 
-
- // Configurar encabezados de seguridad HTTP.
+// Configurar encabezados de seguridad HTTP.
 app.use((req, res, next) => {
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("X-Frame-Options", "DENY");
 
+    // Activar HSTS únicamente en producción HTTPS.
+    // Periodo inicial de prueba: 5 minutos.
+    if (
+        process.env.NODE_ENV === "production" &&
+        req.secure
+    ) {
+        res.setHeader(
+            "Strict-Transport-Security",
+            "max-age=300"
+        );
+    }
 
     // Aplicar la política de seguridad CSP.
     res.setHeader(
@@ -36,8 +52,6 @@ app.use((req, res, next) => {
 
     next();
 });
-
-
 
 // Habilitar compresión de respuestas.
 app.use(compression());
@@ -139,5 +153,5 @@ app.use((err, req, res, next) => {
 
 // Iniciar servidor.
 app.listen(PORT, () => {
-    console.log(`Servidor activo en http://localhost:${PORT}`);
+    console.log(`Servidor activo en el puerto ${PORT}`);
 });
