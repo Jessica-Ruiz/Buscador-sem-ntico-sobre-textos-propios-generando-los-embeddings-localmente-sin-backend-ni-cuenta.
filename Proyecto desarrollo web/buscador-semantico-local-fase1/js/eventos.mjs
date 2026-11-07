@@ -135,8 +135,14 @@ export function configurarEventos() {
     borrarDatosGuardados
     );
 
-    // Carga el modelo al iniciar.
-    prepararModelo();
+
+    // El modelo se cargará cuando el usuario
+    // seleccione documentos para procesar.
+    establecerEstadoModelo(
+        "Modelo pendiente · se cargará al procesar documentos",
+        "warning"
+    );
+
 }
 /**
  * Cancela el procesamiento de los documentos.
