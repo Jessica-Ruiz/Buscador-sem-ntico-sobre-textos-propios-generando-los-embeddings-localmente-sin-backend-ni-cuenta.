@@ -58,12 +58,23 @@ const EXTENSIONES_PERMITIDAS = new Set([
     "pdf"
 ]);
 
-export function configurarEventos() {
-    const ultimaConsulta = sessionStorage.getItem("ultimaConsulta");
 
-    if (ultimaConsulta) {
-        busqueda.value = ultimaConsulta;
+export function configurarEventos() {
+    // Recuperar la última consulta sin bloquear la aplicación.
+    try {
+        const ultimaConsulta =
+            sessionStorage.getItem("ultimaConsulta");
+
+        if (ultimaConsulta) {
+            busqueda.value = ultimaConsulta;
+        }
+    } catch (error) {
+        console.warn(
+            "No se pudo recuperar la última consulta:",
+            error
+        );
     }
+
     fileInput.addEventListener(
         "change",
         manejarSeleccionArchivos
@@ -569,8 +580,18 @@ async function manejarBusqueda(event) {
 
         return;
     }
+
     // Guardar temporalmente la última consulta de la sesión.
-    sessionStorage.setItem("ultimaConsulta", consulta); 
+    // Si falla el almacenamiento, la búsqueda puede continuar.
+    try {
+        sessionStorage.setItem("ultimaConsulta", consulta);
+    } catch (error) {
+        console.warn(
+            "No se pudo guardar la última consulta:",
+            error
+        );
+    }
+
 
     const cantidad =
         Number(cantidadResultados.value);

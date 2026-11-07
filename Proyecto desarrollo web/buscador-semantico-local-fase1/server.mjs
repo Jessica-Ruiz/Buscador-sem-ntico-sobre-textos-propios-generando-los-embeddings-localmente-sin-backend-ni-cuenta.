@@ -4,11 +4,43 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import compression from "compression";
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.use(compression());
+// Evitar revelar la tecnología del servidor.
+app.disable("x-powered-by");
 
+
+
+ // Configurar encabezados de seguridad HTTP.
+app.use((req, res, next) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "DENY");
+
+
+    // Aplicar la política de seguridad CSP.
+    res.setHeader(
+        "Content-Security-Policy",
+        [
+            "default-src 'self'",
+            "script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com 'wasm-unsafe-eval'",
+            "style-src 'self' https://cdn.jsdelivr.net",
+            "connect-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+            "worker-src 'self' blob:",
+            "img-src 'self' data: blob:",
+            "font-src 'self' data:",
+            "object-src 'none'",
+            "base-uri 'self'",
+            "frame-ancestors 'none'"
+        ].join("; ")
+    );
+
+    next();
+});
+
+
+
+// Habilitar compresión de respuestas.
+app.use(compression());
 
 // Obtener la ruta de la carpeta del proyecto.
 const __filename = fileURLToPath(import.meta.url);
@@ -37,7 +69,6 @@ app.get("/api/estado", (req, res) => {
 });
 
 // Ruta de prueba para recibir consultas.
-
 app.post("/api/consulta", (req, res) => {
     const { consulta } = req.body ?? {};
 
@@ -64,18 +95,28 @@ app.post("/api/consulta", (req, res) => {
         });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
         mensaje: "Consulta recibida correctamente",
         consulta: consultaLimpia
     });
 });
 
-
+// Responder con JSON cuando una ruta de API no existe.
+app.use("/api", (req, res) => {
+    return res.status(404).json({
+        error: "La ruta de API solicitada no existe."
+    });
+});
 
 // Manejo centralizado de errores.
 app.use((err, req, res, next) => {
+
     // JSON malformado.
-    if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    if (
+        err instanceof SyntaxError &&
+        err.status === 400 &&
+        "body" in err
+    ) {
         return res.status(400).json({
             error: "El formato JSON enviado no es válido."
         });
@@ -95,7 +136,6 @@ app.use((err, req, res, next) => {
         error: "Ocurrió un error interno en el servidor."
     });
 });
-
 
 // Iniciar servidor.
 app.listen(PORT, () => {
