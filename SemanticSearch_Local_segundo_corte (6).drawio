@@ -1,0 +1,179 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.6 Chrome/140.0.7339.249 Electron/38.8.0 Safari/537.36" version="29.3.6">
+  <diagram id="segundo-corte" name="Diagrama general · SemanticSearch Local">
+    <mxGraphModel dx="2084" dy="1252" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="1810" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="browser" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#f7faff;strokeColor=#9db7df;" value="&lt;b&gt;01 · NAVEGADOR&lt;/b&gt;&lt;br&gt;Interfaz y procesamiento local" vertex="1">
+          <mxGeometry height="1130" width="950" x="40" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="render" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#f7fbf7;strokeColor=#91b798;" value="&lt;b&gt;02 · RENDER&lt;/b&gt;&lt;br&gt;Servidor Node.js + Express" vertex="1">
+          <mxGeometry height="1130" width="480" x="1040" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="user" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#eee8fa;strokeColor=#8866aa;" value="&lt;b&gt;Usuario&lt;/b&gt;&lt;br&gt;Carga archivos y escribe consultas" vertex="1">
+          <mxGeometry height="70" width="300" x="340" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ui" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e8f0fe;strokeColor=#5176aa;" value="&lt;b&gt;Interfaz · index.html&lt;/b&gt;&lt;br&gt;Archivos y consultas&lt;br&gt;Selector Claro / Oscuro / Sistema" vertex="1">
+          <mxGeometry height="100" width="250" x="80" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="main" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e8f0fe;strokeColor=#5176aa;" value="&lt;b&gt;main.mjs&lt;/b&gt;&lt;br&gt;Punto de entrada&lt;br&gt;Inicialización de la aplicación" vertex="1">
+          <mxGeometry height="90" width="250" x="80" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="events" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e8f0fe;strokeColor=#5176aa;" value="&lt;b&gt;eventos.mjs&lt;/b&gt;&lt;br&gt;Coordina las acciones del usuario&lt;br&gt;Procesamiento y búsqueda" vertex="1">
+          <mxGeometry height="110" width="250" x="80" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="view" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e8f0fe;strokeColor=#5176aa;" value="&lt;b&gt;interfaz.mjs&lt;/b&gt;&lt;br&gt;Actualiza el DOM&lt;br&gt;Muestra progreso y resultados" vertex="1">
+          <mxGeometry height="100" width="250" x="80" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="storage" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#fff3df;strokeColor=#c8923e;" value="&lt;b&gt;almacenamiento.mjs&lt;/b&gt;&lt;br&gt;Preferencias → localStorage&lt;br&gt;Última consulta → sessionStorage" vertex="1">
+          <mxGeometry height="110" width="250" x="80" y="1150" as="geometry" />
+        </mxCell>
+        <mxCell id="docs" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e8f0fe;strokeColor=#5176aa;" value="&lt;b&gt;documentos.mjs&lt;/b&gt;&lt;br&gt;TXT · MD · CSV · JSON · PDF&lt;br&gt;Extrae texto y crea fragmentos" vertex="1">
+          <mxGeometry height="110" width="250" x="410" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="emb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e8f0fe;strokeColor=#5176aa;" value="&lt;b&gt;embeddings.mjs&lt;/b&gt;&lt;br&gt;Fragmentos y consulta → vectores&lt;br&gt;384 dimensiones · carga bajo demanda" vertex="1">
+          <mxGeometry height="110" width="250" x="410" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="search" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e8f0fe;strokeColor=#5176aa;" value="&lt;b&gt;buscador.mjs&lt;/b&gt;&lt;br&gt;Similitud coseno y ranking&lt;br&gt;Umbral y cantidad de resultados" vertex="1">
+          <mxGeometry height="110" width="250" x="410" y="1060" as="geometry" />
+        </mxCell>
+        <mxCell id="pdf" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e5f5ed;strokeColor=#62a183;" value="&lt;b&gt;PDF.js&lt;/b&gt;&lt;br&gt;Extracción de texto de PDF" vertex="1">
+          <mxGeometry height="110" width="240" x="710" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#eee8fa;strokeColor=#8866aa;" value="&lt;b&gt;Transformers.js +&lt;br&gt;ONNX Runtime Web&lt;/b&gt;&lt;br&gt;Inferencia local&lt;br&gt;Modelo multilingüe cuantizado" vertex="1">
+          <mxGeometry height="130" width="240" x="710" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="cache" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#fff3df;strokeColor=#c8923e;" value="&lt;b&gt;Caché del navegador&lt;/b&gt;&lt;br&gt;Reutiliza archivos del modelo&lt;br&gt;Sujeta a disponibilidad del navegador" vertex="1">
+          <mxGeometry height="110" width="240" x="710" y="1150" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e8f0fe;strokeColor=#5176aa;" value="&lt;b&gt;api.mjs&lt;/b&gt;&lt;br&gt;Cliente HTTP&lt;br&gt;fetch · async/await · JSON" vertex="1">
+          <mxGeometry height="100" width="240" x="710" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="server" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e4f2e6;strokeColor=#62936b;" value="&lt;b&gt;server.mjs · Express&lt;/b&gt;&lt;br&gt;GET /api/estado → estado&lt;br&gt;POST /api/consulta → validación&lt;br&gt;Respuesta HTTP y JSON" vertex="1">
+          <mxGeometry height="130" width="400" x="1080" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="static" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e4f2e6;strokeColor=#62936b;" value="&lt;b&gt;Recursos estáticos&lt;/b&gt;&lt;br&gt;HTML · CSS · JavaScript&lt;br&gt;/models/ → modelo y tokenizador&lt;br&gt;Sin inferencia en el servidor" vertex="1">
+          <mxGeometry height="130" width="400" x="1080" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="security" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#e4f2e6;strokeColor=#62936b;" value="&lt;b&gt;Seguridad y rendimiento&lt;/b&gt;&lt;br&gt;Validación y manejo de errores&lt;br&gt;Encabezados de seguridad&lt;br&gt;Compresión HTTP" vertex="1">
+          <mxGeometry height="110" width="400" x="1080" y="1150" as="geometry" />
+        </mxCell>
+        <mxCell id="download" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#f0f0f0;strokeColor=#888888;" value="&lt;b&gt;descargar-modelo.mjs&lt;/b&gt;&lt;br&gt;Preparación / construcción&lt;br&gt;npm run download:model" vertex="1">
+          <mxGeometry height="100" width="400" x="1080" y="1450" as="geometry" />
+        </mxCell>
+        <mxCell id="hf" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#f0f0f0;strokeColor=#888888;" value="&lt;b&gt;Hugging Face&lt;/b&gt;&lt;br&gt;Origen de los archivos del modelo" vertex="1">
+          <mxGeometry height="100" width="240" x="710" y="1450" as="geometry" />
+        </mxCell>
+        <mxCell id="b1" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#5176aa;exitX=0;exitY=0.5;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;" target="ui" value="Interactúa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="205" y="155" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b2" edge="1" parent="1" source="main" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#5176aa;exitX=0;exitY=0.5;entryX=0;entryY=0.25;exitPerimeter=0;entryPerimeter=0;dashed=1;" target="events" value="Inicializa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="60" y="345" />
+              <mxPoint x="60" y="687" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b3" edge="1" parent="1" source="ui" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#5176aa;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;" target="events" value="Eventos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" edge="1" parent="1" source="events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#3a8a60;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;" target="view" value="Actualiza vista">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b5" edge="1" parent="1" source="events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#c8923e;exitX=0;exitY=0.75;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;dashed=1;startArrow=block;" target="storage" value="Lee / guarda">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="60" y="742" />
+              <mxPoint x="60" y="1205" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b6" edge="1" parent="1" source="events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#5176aa;exitX=1;exitY=0.5;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" target="docs" value="Procesar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b7" edge="1" parent="1" source="docs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#5176aa;exitX=1;exitY=0.5;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;dashed=1;" target="pdf" value="Usa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b8" edge="1" parent="1" source="docs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#5176aa;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;" target="emb" value="Fragmentos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b9" edge="1" parent="1" source="emb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#5176aa;exitX=1;exitY=0.5;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;dashed=1;" target="runtime" value="Usa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b10" edge="1" parent="1" source="emb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#5176aa;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;" target="search" value="Vectores">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b11" edge="1" parent="1" source="search" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#3a8a60;exitX=0;exitY=0.5;entryX=1;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" target="view" value="Resultados">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="370" y="1115" />
+              <mxPoint x="370" y="910" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b12" edge="1" parent="1" source="events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#5176aa;exitX=1;exitY=0.2;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" target="api" value="Validar consulta">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="365" y="682" />
+              <mxPoint x="365" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b13" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#5176aa;exitX=1;exitY=0.5;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;startArrow=block;" target="server" value="HTTP / JSON">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b14" edge="1" parent="1" source="runtime" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#c8923e;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitPerimeter=0;entryPerimeter=0;dashed=1;startArrow=block;" target="cache" value="Reutiliza">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b15" edge="1" parent="1" source="static" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#888888;exitX=0;exitY=0.5;entryX=1;entryY=0.5;exitPerimeter=0;entryPerimeter=0;dashed=1;" target="runtime" value="Archivos del modelo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b16" edge="1" parent="1" source="hf" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#888888;exitX=1;exitY=0.5;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;dashed=1;" target="download" value="Descarga">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b17" edge="1" parent="1" source="download" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#888888;exitX=1;exitY=0.5;entryX=1;entryY=0.5;exitPerimeter=0;entryPerimeter=0;dashed=1;" target="static" value="Guarda en models/">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1500" y="1500" />
+              <mxPoint x="1500" y="925" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b18" edge="1" parent="1" source="server" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#5176aa;exitX=0;exitY=0.5;entryX=0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;dashed=1;" target="security" value="Aplica">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1060" y="535" />
+              <mxPoint x="1060" y="1205" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="delivery-note" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=13;fontColor=#536575;" value="&lt;b&gt;Entrega de la aplicación&lt;/b&gt;&lt;br&gt;El navegador carga HTML, CSS y JavaScript desde Express mediante HTTP." vertex="1">
+          <mxGeometry height="90" width="400" x="1080" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="theme" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#eee8fa;strokeColor=#8866aa;" value="&lt;b&gt;tema.mjs · Apariencia&lt;/b&gt;&lt;br&gt;Claro / Oscuro / Sistema&lt;br&gt;Aplica data-bs-theme&lt;br&gt;Detecta prefers-color-scheme" vertex="1">
+          <mxGeometry height="120" width="250" x="410" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="theme-css" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#eee8fa;strokeColor=#8866aa;" value="&lt;b&gt;Bootstrap + styles.css&lt;/b&gt;&lt;br&gt;Colores, fondos y contraste&lt;br&gt;según el tema activo" vertex="1">
+          <mxGeometry height="110" width="240" x="710" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="theme-preference" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontSize=14;fillColor=#fff3df;strokeColor=#8866aa;" value="&lt;b&gt;localStorage · Tema&lt;/b&gt;&lt;br&gt;semanticSearchLocal.theme&lt;br&gt;Guarda y restaura la elección&lt;br&gt;al recargar la página" vertex="1">
+          <mxGeometry height="110" width="250" x="410" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="theme-choice" edge="1" parent="1" source="ui" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;fontSize=11;labelBackgroundColor=#ffffff;strokeColor=#8866aa;exitX=1;exitY=0.15;entryX=0;entryY=0.75;" target="theme" value="Selector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="theme-apply" edge="1" parent="1" source="theme" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;fontSize=11;labelBackgroundColor=#ffffff;strokeColor=#8866aa;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="theme-css" value="Aplica">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="theme-save" edge="1" parent="1" source="theme" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;fontSize=11;labelBackgroundColor=#ffffff;strokeColor=#c8923e;exitX=0.5;exitY=1;entryX=0.5;entryY=0;startArrow=block;" target="theme-preference" value="Guarda / recupera">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
