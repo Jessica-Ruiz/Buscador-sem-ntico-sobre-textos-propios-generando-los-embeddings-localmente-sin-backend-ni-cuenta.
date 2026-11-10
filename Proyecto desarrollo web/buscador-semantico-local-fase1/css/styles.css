@@ -725,3 +725,86 @@ select:focus-visible {
         box-sizing: border-box;
     }
 }
+
+
+/* Selector de apariencia */
+.theme-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.theme-control label {
+    color: var(--text);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.theme-control select {
+    width: auto;
+    min-width: 125px;
+}
+
+/* Variables personalizadas del modo oscuro */
+[data-bs-theme="dark"] {
+    --bg: #121316;
+    --panel: #1c1e23;
+    --panel-2: #292b32;
+    --border: #3b3d45;
+    --text: #f5f5f5;
+    --muted: #b8b8c2;
+    --accent: #ff525c;
+    --accent-2: #ff7b83;
+    --shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+}
+
+/* Componentes personalizados */
+[data-bs-theme="dark"] .app-header {
+    background: rgba(18, 19, 22, 0.94);
+}
+
+[data-bs-theme="dark"] .panel {
+    background: var(--panel);
+}
+
+[data-bs-theme="dark"] .result-card {
+    background: var(--panel);
+}
+
+[data-bs-theme="dark"] .search-input-wrapper {
+    background: var(--panel-2);
+}
+
+[data-bs-theme="dark"] .empty-state,
+[data-bs-theme="dark"] .results-empty,
+[data-bs-theme="dark"] .result-text {
+    background: var(--panel-2);
+}
+
+[data-bs-theme="dark"] .upload-progress {
+    background: var(--panel);
+    border-color: var(--border);
+}
+
+[data-bs-theme="dark"] .progress-track {
+    background: var(--panel-2);
+}
+
+[data-bs-theme="dark"] .button-secondary:hover:not(:disabled) {
+    background: var(--panel-2);
+}
+
+[data-bs-theme="dark"] .search-input-wrapper input::placeholder {
+    color: var(--muted);
+}
+
+@media (max-width: 700px) {
+    .theme-control label {
+        display: none;
+    }
+
+    .theme-control select {
+        min-width: 105px;
+    }
+}
