@@ -152,6 +152,15 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar servidor.
+
+ // Iniciar servidor.
 app.listen(PORT, () => {
-    console.log(`Servidor activo en el puerto ${PORT}`);
+    const URL = `http://localhost:${PORT}`;
+
+    console.log("       SEMANTICSEARCH LOCAL");
+    console.log("Servidor iniciado correctamente");
+    console.log(`Puerto: ${PORT}`);
+    console.log(`Acceso local: ${URL}`);
+
 });
+
